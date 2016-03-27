@@ -1,2 +1,6 @@
 *.pyc
-db.sqlite*
+_build
+Brewm/settings/local.py
+brewnode
+node_modules/
+*~

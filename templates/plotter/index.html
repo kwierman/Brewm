@@ -1,0 +1,65 @@
+{% extends "leftsidebar.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% include "sidebar.html" %}
+        <div id="ScatterPlot">
+            Select Model:
+            <select data-bind='options: availableModels, value: selectedModel, event: {change: selectModel}, optionsCaption: "Please Select a Model"'></select>
+            <hr/>
+            Select X Axis:
+            <select data-bind='options: availableXaxes, value: selectedXaxis, event: {change: selectAxes}, optionsCaption: "Please Select XAxis"'></select>
+            <hr/>
+            Select Y Axis:
+            <select data-bind='options: availableYaxes, value: selectedYaxis, event: {change: selectAxes}, optionsCaption: "Please Select YAxis"'></select>
+            <hr/>
+        </div>
+    </div>
+</div>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/knockout-3.4.0.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    var ViewModel = function(){
+        var self = this;
+        self.availableModels = ko.observableArray(['Grain','Hop','Water','Style','Yeast']);
+        self.selectedModel   = ko.observable("");
+        self.availableXaxes  = ko.observableArray([]);
+        self.selectedXaxis   = ko.observable("");
+        self.availableYaxes  = ko.observableArray([]);
+        self.selectedYaxis   = ko.observable("");
+
+        self.selectModel = function(){
+            //now reset the
+            $.get("/brewtables/data/model",
+            {"model": self.selectedModel()}).done(function(response){
+                self.availableXaxes(response.data);
+                self.selectedXaxis("");
+                self.availableYaxes(response.data);
+                self.selectedYaxis("");
+            });
+        };
+
+        self.selectAxes = function(){
+            if(typeof self.selectedXaxis() != "undefined"){
+                if(typeof self.selectedYaxis() != "undefined"){
+                    $.get("/brewtables/data/json",
+                        {"xmodel": self.selectedModel(),
+                        "ymodel": self.selectedModel(),
+                        "xfield":self.selectedXaxis(),
+                        "yfield":self.selectedYaxis()
+                        }).done(function(response){
+                            console.log(response);
+                    });
+
+                }
+            }
+        };
+    };
+    ko.applyBindings(ViewModel, document.getElementById("#ScatterPlot"));
+});
+
+</script>
+{% endblock %}

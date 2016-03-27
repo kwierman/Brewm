@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{%block documentbody %}
+	<body>
+
+		<!-- Header Wrapper -->
+		<div class="wrapper style1">
+			{% include "navigation_bar.html" %}
+		</div>
+
+		<!-- Main -->
+			<div id="main" class="wrapper style4">
+                <div class="container">
+                    <div class="row">
+                        <!-- Content -->
+        			    {% block content%}
+        			    {% endblock %}
+                    </div>
+                </div>
+			</div>
+	</body>
+{% endblock %}
